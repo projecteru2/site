@@ -1,0 +1,38 @@
+baseURL = "https://eru.sh"
+languageCode = "zh-CN"
+title = "ProjectEru"
+theme = "minimal"
+tags = ["eru", "container", "docker"]
+
+[params]
+    author = "CMGS"
+    description ="Another container orchestration platform"
+    githubUsername = "projecteru2"
+    accent = "red"
+    showBorder = true
+    backgroundColor = "white"
+    font = "Raleway" # should match the name on Google Fonts!
+    highlight = true
+    highlightStyle = "solarized-dark"
+    highlightLanguages = ["go", "python"]
+
+[[menu.main]]
+    url = "/"
+    name = "Home"
+    weight = 1
+
+[[menu.main]]
+    url = "https://github.com/projecteru2"
+    name = "Projects"
+    weight = 2
+
+[[menu.main]]
+    url = "https://book.eru.sh/"
+    name = "Book"
+    weight = 3
+
+[[menu.icon]]
+    url = "https://github.com/projecteru2/"
+    name = "github"
+    weight = 1
+
