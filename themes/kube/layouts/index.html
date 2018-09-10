@@ -1,0 +1,38 @@
+{{ define "title"}} {{ .Site.Title}} {{end}}
+{{ define "header"}} {{ partial "header" .}} {{end}}
+{{ define "main"}}
+
+<div id="main">
+  <div id="hero">
+    <h1>{{.Title}}</h1>
+    <p>{{.Description}}</p>
+  </div>
+  <div id="action-buttons">
+    <a class="button primary big" href="https://github.com/{{ .Site.Params.github }}" onclick="_gaq.push(['_trackEvent', 'kube', 'github']);">Github</a>
+    <a class="button outline big" href="/docs/" onclick="_gaq.push(['_trackEvent', 'kube', 'docs']);">Documentation</a>
+  </div>
+  <div id="kube-features">
+    <div class="row gutters">
+      <div class="col col-6 item">
+        <h3>No more concept</h3>
+        <p>Without so many concepts, engineer can use Eru easily.</p>
+      </div>
+      <div class="col col-6 item">
+        <h3>Deploy efficiently</h3>
+        <p>Eru can calcuate containers and deploy them efficiently.</p>
+      </div>
+    </div>
+    <div class="row gutters">
+      <div class="col col-6 item">
+        <h4>Bootstrap</h4>
+        <p>Eru can bootstrap. Just a few cost on ops.</p>
+      </div>
+      <div class="col col-6 item">
+        <h4>License</h4>
+        <p>Eru licensed under <a href="https://opensource.org/licenses/MIT">MIT</a>. Absolutely free for anyone.</p>
+    </div>
+  </div>
+</div>
+</div>
+{{ end }}
+{{ define "footer"}} {{ partial "footer" .}} {{end}}
