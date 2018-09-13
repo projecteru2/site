@@ -12,7 +12,7 @@ echo "make eru config dir"
 mkdir -p ~/.eru
 
 echo "log_level: \"DEBUG\"
-bind: \"0.0.0.0:5001\"
+bind: \"0.0.0.0:6001\"
 image_cache: 2
 global_timeout: 300
 lock_timeout: 30
@@ -52,7 +52,7 @@ echo "core config store in ~/.eru/core.yaml"
 docker run -d \
   --name eru_core_$HOSTNAME \
   --restart always \
-  -p 5001:5001 \
+  -p 6001:6001 \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v ~/.eru/core.yaml:/etc/eru/core.yaml \
   projecteru2/core \
@@ -66,7 +66,7 @@ mkdir -p ~/.eru/bin
 CPUS=`getconf _NPROCESSORS_ONLN`
 CPUS=`expr $CPUS / 2`
 echo "docker run -it --rm \
-  --env ERU=${CORE_IP}:5001 \
+  --env ERU=${CORE_IP}:6001 \
   --env CPUS=${CPUS} \
   -v ~/.eru:/eru \
   projecteru2/cli \
@@ -83,7 +83,7 @@ echo "add node"
 echo "pid: /tmp/eru-agent.sock
 health_check_interval: 5
 health_check_timeout: 10
-core: ${CORE_IP}:5001
+core: ${CORE_IP}:6001
 docker:
   endpoint: unix:///var/run/docker.sock
 metrics:
