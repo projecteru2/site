@@ -109,6 +109,6 @@ echo "add agent"
 
 echo "Let's run a lambda for testing"
 read -p "Are you ready?[Y/n]" Y
-[[ "$Y" == "Y" || "$Y" == "y" || "$Y" == "" ]] && ~/.eru/bin/cli lambda --name hello --pod eru --mem 10485760 --cpu 0.01 "echo 'hello world'"
-echo "now you can run something by ~/.eru/bin/cli"
+[[ "$Y" == "Y" || "$Y" == "y" || "$Y" == "" ]] && ~/.eru/bin/cli lambda --name hello --pod eru --mem 10485760 --cpu 0.01 "date"
+echo "now you can play eru by ~/.eru/bin/cli"
 
