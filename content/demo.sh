@@ -1,0 +1,114 @@
+#/bin/sh
+echo "this is a standalone demo"
+echo "run etcd"
+docker run --name etcd -d -p 2379:2379 -p 4001:4001 -p 2380:2380 quay.io/coreos/etcd \
+    etcd \
+    --advertise-client-urls "http://0.0.0.0:2379,http://0.0.0.0:4001" \
+    --listen-client-urls "http://0.0.0.0:2379"
+
+ETCD_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' etcd`
+
+echo "make eru config dir"
+mkdir -p ~/.eru
+
+echo "log_level: \"DEBUG\"
+bind: \"0.0.0.0:5001\"
+image_cache: 2
+global_timeout: 300
+lock_timeout: 30
+
+etcd:
+    machines:
+        - \"http://${ETCD_IP}:2379\"
+    prefix: \"/eru\"
+    lock_prefix: \"eru/_lock\"
+
+git:
+    public_key: \"${PUBKEY}\"
+    private_key: \"${PRIVKEY}\"
+    token: \"${GITLAB_TOKEN}\"
+    scm_type: \"gitlab\"
+
+docker:
+    network_mode: \"bridge\"
+    hub: \"${DOCKERHUB}\"
+    namespace: \"${REGISTRY_NAMESPACE}\"
+    build_pod: \"eru\"
+    local_dns: true
+    auths:
+      ${REGISTRY}
+        username: "${REGISTRY_USER}"
+        password: "${REGISTRY_PASSWORD}"
+    log:
+      type: \"json-file\"
+
+scheduler:
+    maxshare: -1
+    sharebase: 100
+" > ~/.eru/core.yaml
+
+echo "core config store in ~/.eru/core.yaml"
+
+docker run -d \
+  --name eru_core_$HOSTNAME \
+  --restart always \
+  -p 5001:5001 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v ~/.eru/core.yaml:/etc/eru/core.yaml \
+  projecteru2/core \
+  /usr/bin/eru-core
+
+CORE_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' eru_core_$HOSTNAME`
+
+echo "make eru bin dir"
+mkdir -p ~/.eru/bin
+
+CPUS=`getconf _NPROCESSORS_ONLN`
+CPUS=`expr $CPUS / 2`
+echo "docker run -it --rm \
+  --env ERU=${CORE_IP}:5001 \
+  --env CPUS=${CPUS} \
+  -v ~/.eru:/eru \
+  projecteru2/cli \
+  eru-cli \$@
+" > ~/.eru/bin/cli
+chmod +x ~/.eru/bin/cli
+
+echo "Docker for Mac can’t route traffic to containers."
+echo "create pod"
+~/.eru/bin/cli pod add --favor MEM eru
+echo "add node"
+~/.eru/bin/cli node add --nodename=test --endpoint unix:///var/run/docker.sock --cpu ${CPUS} --share 100 --memory 10737418240 eru
+
+echo "pid: /tmp/eru-agent.sock
+health_check_interval: 5
+health_check_timeout: 10
+core: ${CORE_IP}:5001
+docker:
+  endpoint: unix:///var/run/docker.sock
+metrics:
+  step: 30
+api:
+  addr: 0.0.0.0:12345
+log:
+  forwards:
+    - udp://127.0.0.1:5144
+  stdout: False" > ~/.eru/agent.yaml
+
+echo "core config store in ~/.eru/agent.yaml"
+
+echo "add agent"
+~/.eru/bin/cli container deploy \
+    --auto-replace \
+    --network bridge \
+    --pod eru --entry agent \
+    --env ERU_HOSTNAME=test \
+    --file /eru/agent.yaml:/agent.yaml \
+    --image projecteru2/agent \
+    --cpu 0.05 --mem 104857600 https://goo.gl/3K3GHb
+
+echo "Let's run a lambda for testing"
+read -p "Are you ready?[Y/n]" Y
+[[ "$Y" == "Y" || "$Y" == "y" || "$Y" == "" ]] && ~/.eru/bin/cli lambda --name hello --pod eru --mem 10485760 --cpu 0.01 "echo 'hello world'"
+echo "now you can run something by ~/.eru/bin/cli"
+
