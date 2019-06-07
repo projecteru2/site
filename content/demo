@@ -76,7 +76,7 @@ chmod +x ~/.eru/bin/cli
 
 echo "Docker for Mac can’t route traffic to containers."
 echo "create pod"
-~/.eru/bin/cli pod add --favor MEM eru
+~/.eru/bin/cli pod add eru
 echo "add node"
 ~/.eru/bin/cli node add --nodename=test --endpoint unix:///var/run/docker.sock --cpu ${CPUS} --share 100 --memory 10737418240 eru
 
