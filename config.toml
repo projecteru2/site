@@ -20,4 +20,4 @@ pygmentsStyle = "monokailight"
 [[menu.main]]
     name = "Docs"
     weight = -100
-    url = "/docs/"
+    url = "https://book.eru.sh/"
