@@ -36,7 +36,7 @@ docker:
     build_pod: \"eru\"
     local_dns: true
     auths:
-      ${REGISTRY}
+      ${REGISTRY}:
         username: "${REGISTRY_USER}"
         password: "${REGISTRY_PASSWORD}"
     log:
