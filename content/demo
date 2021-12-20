@@ -105,7 +105,7 @@ echo "add agent"
     --env ERU_HOSTNAME=test \
     --file /eru/agent.yaml:/agent.yaml \
     --image projecteru2/agent \
-    --cpu 0.05 --mem 104857600 https://goo.gl/3K3GHb
+    --cpu 0.05 --mem 104857600 https://bit.ly/3J4mQ47
 
 echo "Let's run a lambda for testing"
 read -p "Are you ready?[Y/n]" Y
