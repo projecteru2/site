@@ -1,4 +1,4 @@
-baseURL = "https://eru.sh"
+baseURL = "https://eru.dev"
 languageCode = "zh-CN"
 title = "Eru"
 tags = ["eru", "container", "docker"]
@@ -20,4 +20,4 @@ pygmentsStyle = "monokailight"
 [[menu.main]]
     name = "Docs"
     weight = -100
-    url = "https://book.eru.sh/"
+    url = "https://book.eru.dev/"
